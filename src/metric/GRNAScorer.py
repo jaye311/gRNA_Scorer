@@ -72,7 +72,7 @@ def assess_grna(grna):
     duplex_ok = evaluate_duplex_stability(duplex_energy)
     score += score_duplex_stability(duplex_energy)
 
-    score = round(score, 2) #round to 2 decimal places
+    score = round(score, 3) #round to 3 decimal places
     likely_functional = (
             #uses duplex score but no sequences seem to have delta_g_duplex >= -22 and GC content >= 30
             score >= 9 and
