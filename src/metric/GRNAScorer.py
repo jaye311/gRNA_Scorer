@@ -24,25 +24,26 @@ def check_position_20(grna):
     return not grna[19] in ['C', 'U']
 
 def evaluate_folding_energy(delta_g):
-    return delta_g >= -8
+    return -1.9 >= delta_g >= -3.1
 
 def score_folding_energy(delta_g):
-    if delta_g >= -8:
+    if evaluate_folding_energy(delta_g):
         return 4
+    elif delta_g > -1.9:
+        return (delta_g + 1.9) * -4
     else:
-        return (delta_g + 8) * 0.6
+        return (delta_g + 3.1) * 4
 
-#-22, should possibly be -40 to allow for more likely functional gRNA used for CRISPR CAS 9
-#AI GENERATED REASONING
-#Keep current rule (duplex ≥ −22)	Accept only weaker guides (safe for CRISPRi, etc.)
-#Relax rule to (duplex ≥ −40)	Accept strong normal cutting guides (editing CRISPR)
 def evaluate_duplex_stability(delta_g_duplex):
-    return delta_g_duplex >= -22
+    return -20 >= delta_g_duplex >= -25
+
 def score_duplex_stability(delta_g_duplex):
-    if delta_g_duplex >= -8:
+    if evaluate_duplex_stability:
         return 4
+    elif delta_g_duplex > -20:
+        return (delta_g_duplex + 20) * -0.5
     else:
-        return (delta_g_duplex + 22) * 0.5
+        return (delta_g_duplex + 25) * 0.5
 
 def assess_grna(grna):
     score = 0
@@ -70,20 +71,16 @@ def assess_grna(grna):
     duplex_energy = ViennaRNA.duplexfold(grna, complement).energy
     duplex_ok = evaluate_duplex_stability(duplex_energy)
     score += score_duplex_stability(duplex_energy)
-    score = round(score, 2)
+
+    score = round(score, 2) #round to 2 decimal places
     likely_functional = (
             #uses duplex score but no sequences seem to have delta_g_duplex >= -22 and GC content >= 30
-            score >= 5 and
+            score >= 9 and
             (has_optimal_gc and
             no_repeats and
             uuu_check and
-            good_pos_20 and
-            mfe_ok)
-            or (no_repeats and
-            uuu_check and
-            good_pos_20 and
-            mfe_ok and
-            duplex_ok)
+            good_pos_20) and
+            (mfe_ok or duplex_ok)
     )
 
     result = {
@@ -137,7 +134,7 @@ def print_result_format(result):
             else:
                 print(f"{key}: \033[31mFalse\033[0m") # Red False
         elif key == 'Score':
-            if value >= 5:
+            if value >= 9:
                 print(f"{key}: \033[32m{value}\033[0m")  # Green Score above 5
             else:
                 print(f"{key}: \033[31m{value}\033[0m") # Red Score below 5
@@ -148,11 +145,11 @@ def print_result_format(result):
 # batch_assess('input_grnas.txt', 'output_metrics.csv')
 def main():
     # Duplex_Stability_OK and GC_Content metrics make it hard to find a Likely_Functional gRNA
-    #batch_assess('grnaSeqs.txt', 'grnaResults.csv')
+    batch_file('grnaSeqs.txt', 'grnaResults.csv')
     batch_print('grnaSeqs.txt')
     print("CHOPCHOP------"*9)
     batch_print('chopchop.txt')
-    #batch_assess('chopchop.txt', 'chopchopResults.csv')
+    batch_file('chopchop.txt', 'chopchopResults.csv')
 
 
 if __name__ == "__main__":
