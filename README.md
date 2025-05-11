@@ -9,4 +9,4 @@ Future Work:
 Considering the context of the gRNAs, their surroundings, and potential mismatches across the genome.
 ![image](https://github.com/user-attachments/assets/fc624ad7-aae5-4fed-8d0c-bd2ed2228278)
 ![image](https://github.com/user-attachments/assets/9d50a252-c185-460d-9d07-064e52ee1d76)
-![image](https://github.com/user-attachments/assets/0e12ee80-4b99-493f-8ab5-6794d4bb01b4)
+![image](https://github.com/user-attachments/assets/0e12ee80-4b99-493f-8ab5-6794d4bb01b4) 
